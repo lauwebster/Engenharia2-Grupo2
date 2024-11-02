@@ -1,4 +1,4 @@
-import {React, useState} from 'react'
+import React, {useState} from 'react'
 import './login-styles.css';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -10,53 +10,46 @@ function Login(){
         password: ''
     });
     const [erros, setErros] = useState('');
-    //const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    function validation(values){
-        let error = {};
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if(values.email === "")
-            error.email = "Campo não deve ser vazio";
-        else if(!emailPattern.test(values.email))
-            error.email = "Email inválido";
-        else{
-            error.email = "";
-        }
-
-        if(values.password === "")
-            error.password = "Senha não pode ser vazia";
-        else{
-            error.password = "";
-        }
-
-        return error;
-    }
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        setErros(validation(valores));
-        if(erros === ""){
-            realizarLogin();
-        }
-    }
     const handleInput = (event) => {
         setValores(prev => ({...prev, [event.target.name]: [event.target.value]}));
     }
 
-    function realizarLogin(){
-        axios.post('/login', {
-            email: valores.email,
-            password: valores.email
-        })
-        .then(function (response) {
-            //vai para o menu
-            //navigate('/');
-            console.log("Logou");
-        })
-        .catch(function (error) {
-            //erro
-            console.log("Deu erro");
-        });
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        validation(valores);
+
+        if(!erros.length > 0){
+            axios.post('http://localhost:3000/login', {
+                email: valores.email,
+                password: valores.password
+            })
+            .then(res => {
+                navigate("/menu");
+                console.log(res);
+            })
+            .catch(err => console.log(err))
+        }
+    }
+
+    function validation(values){
+        
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if(values.email === "")
+            setErros("Campo não deve ser vazio");
+        else if(!emailPattern.test(values.email))
+            setErros("Email inválido");
+        else{
+            setErros("");
+        }
+
+        if(values.password === "")
+            setErros("Senha não pode ser vazia");
+        else{
+            setErros("");
+        }
     }
 
     return (
