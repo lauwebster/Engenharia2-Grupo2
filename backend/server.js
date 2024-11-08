@@ -1,12 +1,12 @@
 const express = require("express");
-const mysql = require('mysql');
 const cors = require('cors');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Configuração do banco para múltiplas instruções
+const mysql = require('mysql2');
+
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -16,6 +16,13 @@ const db = mysql.createConnection({
     ssl: false
 });
 
+db.connect((err) => {
+  if (err) {
+    console.error('Erro ao conectar ao banco de dados:', err);
+    return;
+  }
+  console.log('Conectado ao banco de dados MySQL');
+});
 
 app.get('/criar', (req, res) => {
     const sql = `
@@ -115,7 +122,7 @@ app.get('/criar', (req, res) => {
         FOREIGN KEY (Caixa_idCaixa) REFERENCES Caixa(idCaixa)
     );
     `;
-    
+    console.log("Passou por aqui");
     // Executando a query SQL para criar as tabelas e inserir dados iniciais
     db.query(sql, (err, result) => {
         if (err) {
@@ -131,11 +138,15 @@ app.post('/login', (req, res) => {
     const senha = req.body.senha;
     const values = [email, senha];
     console.log("Bateu na rota do backend");
+    console.log("EMail: " + email);
+    console.log("Senha: " + senha);
     db.query(sql, values, (err, data) => {
         if (err) {
+            console.log("err: " +err);
             return res.send({ error: err });
         }
         if (data.length > 0) {
+            console.log(data);
             res.send(data); // Usuário autenticado com sucesso
         } else {
             res.send({
