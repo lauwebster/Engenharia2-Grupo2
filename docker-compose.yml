@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: meu-banco-dados
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: siscarim_schema
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3006:3006"
+    volumes:
+      - ./dbdata:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+    container_name: meu-backend
+    environment:
+      DB_HOST: mysql              # Nome do serviço do MySQL no Docker
+      DB_USER: user
+      DB_PASSWORD: userpassword
+      DB_NAME: siscarim_schema
+    depends_on:
+      - mysql                     # Garante que o MySQL esteja ativo antes do backend iniciar
+    ports:
+      - "8081:8081"               # Porta para acessar o backend
+    volumes:
+      - ./backend:/app          # Mapeia o código local para o container do backend
+      - /app/node_modules        # Evita conflitos do node_modules
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: meu-frontend
+    environment:
+      REACT_APP_API_URL: "http://localhost:8081"  # URL do backend para o React
+    depends_on:
+      - backend                   # Garante que o backend esteja ativo antes do frontend iniciar
+    ports:
+      - "3000:3000"               # Porta para acessar o frontend
+    networks:
+      - app-network
+    volumes:
+      - ./frontend:/app           # Mapeia o código local para o container
+      - /app/node_modules 
+
+networks:
+  app-network:
+    driver: bridge
