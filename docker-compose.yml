@@ -1,54 +1,59 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: meu-banco-dados
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: siscarim_schema
-      MYSQL_USER: user
-      MYSQL_PASSWORD: userpassword
+  db:
+    container_name: db
+    image: postgres:15
+    restart: always
+    env_file:
+      - .env
+    expose:
+      - 5433
     ports:
-      - "3006:3006"
-    volumes:
-      - ./dbdata:/var/lib/mysql
+      - 5433:5433
+    networks:
+      - siscarim
+    environment:
+      - POSTGRES_DB=siscarim
+      - POSTGRES_USER=siscarim
+      - POSTGRES_PASSWORD=siscarim123
 
   backend:
+    container_name: backend
     build:
       context: ./backend
-    container_name: meu-backend
-    environment:
-      DB_HOST: mysql              # Nome do serviço do MySQL no Docker
-      DB_USER: user
-      DB_PASSWORD: userpassword
-      DB_NAME: siscarim_schema
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
     depends_on:
-      - mysql                     # Garante que o MySQL esteja ativo antes do backend iniciar
+      - db
     ports:
-      - "8081:8081"               # Porta para acessar o backend
-    volumes:
-      - ./backend:/app          # Mapeia o código local para o container do backend
-      - /app/node_modules        # Evita conflitos do node_modules
+      - 8080:8080
     networks:
-      - app-network
+      - siscarim
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5433
+      - DB_NAME=siscarim
+      - DB_USER=siscarim
+      - DB_PASSWORD=siscarim123
 
   frontend:
+    container_name: frontend
     build:
       context: ./frontend
-    container_name: meu-frontend
-    environment:
-      REACT_APP_API_URL: "http://localhost:8081"  # URL do backend para o React
+      dockerfile: Dockerfile
+    restart: always
     depends_on:
-      - backend                   # Garante que o backend esteja ativo antes do frontend iniciar
+      - backend
     ports:
-      - "3000:3000"               # Porta para acessar o frontend
+      - 3000:3000
     networks:
-      - app-network
-    volumes:
-      - ./frontend:/app           # Mapeia o código local para o container
-      - /app/node_modules 
+      - siscarim
+    environment:
+      - REACT_APP_API_URL=http://backend:8080  # URL do backend para o frontend
 
 networks:
-  app-network:
+  siscarim:
     driver: bridge

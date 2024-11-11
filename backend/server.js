@@ -33,6 +33,7 @@ app.get('/criar', (req, res) => {
         PRIMARY KEY (id)
     );
     INSERT INTO Usuarios (email, senha) VALUES ('laura@gmail.com', 'Teste@123');
+    INSERT INTO Usuarios (email, senha) VALUES ('cass@gmail.com', 'Teste@123');
 
     CREATE TABLE IF NOT EXISTS Instituicoes (
         idInstituicoes INT NOT NULL AUTO_INCREMENT,
@@ -138,7 +139,7 @@ app.post('/login', (req, res) => {
     const senha = req.body.senha;
     const values = [email, senha];
     console.log("Bateu na rota do backend");
-    console.log("EMail: " + email);
+    console.log("Email: " + email);
     console.log("Senha: " + senha);
     db.query(sql, values, (err, data) => {
         if (err) {
