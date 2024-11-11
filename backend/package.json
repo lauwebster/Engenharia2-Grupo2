@@ -12,6 +12,10 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "luxon": "^3.5.0",
     "prisma": "^5.22.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
   }
 }
