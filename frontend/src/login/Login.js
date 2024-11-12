@@ -13,41 +13,26 @@ function Login(){
     const [errosSenha, setErrosSenha] = useState('');
     const [loginErrado, setLoginErrado] = useState(false);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         let validouEmail = validarEmail(email);
         let validouSenha = validarSenha(senha);
-        console.log("Ao apertar o botao: " + loginErrado);
-
+    
         if((validouEmail === true) && (validouSenha === true)){
-            console.log("Post:");
-            axios.post('http://localhost:8080/login', {
-                email: email,
-                senha: senha
-            })
-            .then((res) => {
-                //Valida novamente pra ter certeza
-                if(res.data.email === email && res.data.senha === senha){
-                    console.log("Ao validar o email e senha: " + loginErrado);
-                    setLoginErrado(false);
-                    setErrosEmail('');
-                    setErrosSenha('');
-                    setEmail('');
-                    setSenha('');
-                    navigate("/menu");
-                }
-                else{
-                    console.log("Else do axios");
-                    console.log(res.data.email);
-                    console.log(res.data.senha);
-                    setLoginErrado(true);
-                }
-            })
-            .catch(err => {
-                console.log("Catch");
-                console.log(err);
-                setLoginErrado(true);
-            })
+            try {
+                const res = await fetch('http://backend:8080/login', {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ email, senha }),
+                });
+          
+                const data = await res.json();
+                console.log(data);
+              } catch (error) {
+                console.error("Erro ao enviar dados:", error);
+              }
         }
     }
     
@@ -80,22 +65,6 @@ function Login(){
     const handleInputSenha = (event) => {
         setSenha(event.target.value);
     };
-   
-
-    useEffect(() => {
-        const injetaDados = sessionStorage.getItem('dadosInjetados');
-
-        if (!injetaDados) {
-            axios.get('http://localhost:8080/criar')
-            .then((response) => {
-                console.log("Deveria injetar dados.");
-            })
-            .catch((error) => {
-                console.log(error.message);
-            });
-            sessionStorage.setItem('dadosInjetados', 'true');
-        }
-    }, []);
 
     return (
         <>
