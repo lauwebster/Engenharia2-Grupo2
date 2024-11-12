@@ -1,20 +1,20 @@
-# Dockerfile do backend
+# Dockerfile
 
+# Use uma imagem Node.js como base
 FROM node:16
 
+# Defina o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia os arquivos de configuração de dependências para aproveitar o cache
+# Copie os arquivos de dependências para o container e instale-as
 COPY package*.json ./
-
-# Instala as dependências do Node.js e do Prisma
 RUN npm install
-RUN npm install prisma @prisma/client
-RUN npx prisma generate
 
-# Copia o restante do código do backend para o container
+# Copie todo o restante do código para o container
 COPY . .
 
+# Expõe a porta que o servidor usará
 EXPOSE 8080
 
-CMD ["npm", "start"]
+# Comando para iniciar o servidor
+CMD ["node", "server.js"]
