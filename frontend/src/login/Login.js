@@ -21,7 +21,7 @@ function Login(){
 
         if((validouEmail === true) && (validouSenha === true)){
             console.log("Post:");
-            axios.post('http://localhost:8081/login', {
+            axios.post('http://localhost:8080/login', {
                 email: email,
                 senha: senha
             })
@@ -86,7 +86,7 @@ function Login(){
         const injetaDados = sessionStorage.getItem('dadosInjetados');
 
         if (!injetaDados) {
-            axios.get('http://localhost:8081/criar')
+            axios.get('http://localhost:8080/criar')
             .then((response) => {
                 console.log("Deveria injetar dados.");
             })
