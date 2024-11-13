@@ -1,20 +1,17 @@
-# Dockerfile
-
-# Use uma imagem Node.js como base
+# Dockerfile para o backend
 FROM node:22
 
-# Defina o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copie os arquivos de dependências para o container e instale-as
+# Instala dependências
 COPY package*.json ./
 RUN npm install
 
-# Copie todo o restante do código para o container
+# Copia o código para o container
 COPY . .
 
-# Expõe a porta que o servidor usará
+# Expõe a porta do backend
 EXPOSE 8080
 
-# Comando para iniciar o servidor
+# Usa o Nodemon no modo de desenvolvimento
 CMD ["npm", "run", "dev"]
