@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import './login-styles.css';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 import Navbar from '../navbar/navbar';
 
 function Login(){
@@ -20,18 +19,25 @@ function Login(){
     
         if((validouEmail === true) && (validouSenha === true)){
             try {
-                const res = await fetch('http://localhost:8080/login', {
+                const res = await fetch('http://localhost:8080/siscarim/login', {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({ email, senha }),
                 });
-          
-                const data = await res.json();
-                console.log(data);
+                
+                if(res.data.email === email && res.data.senha === senha){
+                    console.log("Login validado.");
+                    navigate('/menu');
+                    setLoginErrado(false);
+                }
+                else{
+                    setLoginErrado(true);
+                }
               } catch (error) {
                 console.error("Erro ao enviar dados:", error);
+                setLoginErrado(true);
               }
         }
     }

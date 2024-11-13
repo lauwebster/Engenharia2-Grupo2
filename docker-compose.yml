@@ -38,6 +38,8 @@ services:
       - DB_NAME=siscarim
       - DB_USER=siscarim
       - DB_PASSWORD=siscarim123
+    volumes:
+      - /app/node_modules
 
   frontend:
     container_name: frontend

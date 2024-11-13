@@ -24,6 +24,7 @@ class User {
   static async findByEmail(email){
     return knex("usuarios").where({email}).first();
   }
+
   static async comparaSenha(email, senha){
     return knex("usuarios").where({email}).andWhere({senha}).first();
   }
