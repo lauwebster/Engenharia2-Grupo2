@@ -38,6 +38,9 @@ services:
       - DB_NAME=siscarim
       - DB_USER=siscarim
       - DB_PASSWORD=siscarim123
+    volumes:
+      - ./backend:/app
+      - /app/node_modules 
 
   frontend:
     container_name: frontend
@@ -53,6 +56,9 @@ services:
       - siscarim
     environment:
       - REACT_APP_API_URL=http://localhost:8080
+    volumes:
+      - ./frontend:/app      # Sincroniza a pasta local frontend com o container
+      - /app/node_modules     # Impede que o node_mo
 
 networks:
   siscarim:
