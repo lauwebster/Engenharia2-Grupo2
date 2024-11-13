@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Use uma imagem Node.js como base
-FROM node:16
+FROM node:22
 
 # Defina o diretório de trabalho dentro do container
 WORKDIR /app
