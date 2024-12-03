@@ -18,3 +18,7 @@ docker-compose up --build -d
 # Se der esse erro: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Basta rodar:
 
 sudo chmod 777 -R /var/run/docker.sock
+
+# Conectar no frontend
+
+https://localhost/

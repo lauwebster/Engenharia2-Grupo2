@@ -5,8 +5,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "migrate": "knex migrate:latest --knexfile src/config/knexfile.js",
+    "migrate:rollback": "knex migrate:rollback --knexfile src/config/knexfile.js",
+    "migrate:make": "knex migrate:make --knexfile src/config/knexfile.js"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

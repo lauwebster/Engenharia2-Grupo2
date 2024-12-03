@@ -1,6 +1,17 @@
-version: '3.8'
-
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "3000:3000"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - siscarim
+
   db:
     container_name: db
     image: postgres:15
@@ -8,9 +19,7 @@ services:
     env_file:
       - .env
     expose:
-      - 5433
-    ports:
-      - 5433:5433
+      - 5432
     networks:
       - siscarim
     environment:
@@ -28,19 +37,21 @@ services:
       - .env
     depends_on:
       - db
-    ports:
-      - 8080:8080
+    expose:
+      - 8080
     networks:
       - siscarim
     environment:
       - DB_HOST=db
-      - DB_PORT=5433
+      - DB_PORT=5432
       - DB_NAME=siscarim
       - DB_USER=siscarim
       - DB_PASSWORD=siscarim123
+      - CORS_ORIGIN=http://localhost:8080
     volumes:
       - ./backend:/app
-      - /app/node_modules 
+      - /app/node_modules
+      - ./backend/scripts:/app/scripts:ro
 
   frontend:
     container_name: frontend
@@ -50,15 +61,16 @@ services:
     restart: always
     depends_on:
       - backend
-    ports:
-      - 3000:3000
+    expose:
+      - 3000
     networks:
       - siscarim
     environment:
-      - REACT_APP_API_URL=http://localhost:8080
+      - REACT_APP_API_URL=/api
+      - NODE_ENV=development
     volumes:
-      - ./frontend:/app      # Sincroniza a pasta local frontend com o container
-      - /app/node_modules     # Impede que o node_mo
+      - ./frontend:/app
+      - /app/node_modules
 
 networks:
   siscarim:
