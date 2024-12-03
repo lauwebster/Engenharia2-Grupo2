@@ -11,7 +11,6 @@ class TipoExameController {
           message: "Nome do tipo de exame é obrigatório",
         });
       }
-
       const newTipoExame = await TipoExame.create({
         nome,
         descricao,
