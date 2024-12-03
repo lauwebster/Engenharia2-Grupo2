@@ -1,18 +1,24 @@
-const express = require("express");
-const userRoutes = require("./src/routes/userRoutes");
+import express from "express";
+import cors from "cors";
+import mountRoutes from "./src/routes.js";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-const cors = require("cors");
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost", "http://localhost:80"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+
 app.use(express.json());
-app.use("/siscarim/", userRoutes); // Prefixa as rotas de usuários com "/api/users"
+mountRoutes(app);
 
-app.get("/", (req, res) => {
-  res.send("Servidor funcionando!");
+app.get("/health", (req, res) => {
+  res.status(200).json({ message: "OK" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+app.listen(PORT, () => {});

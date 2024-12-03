@@ -3,15 +3,19 @@ FROM node:22
 
 WORKDIR /app
 
-# Instala dependências
+RUN apt-get update && apt-get install -y netcat-openbsd
+RUN npm install -g nodemon
+
 COPY package*.json ./
+
 RUN npm install
 
-# Copia o código para o container
+RUN mkdir -p scripts
+COPY scripts/wait-and-migrate.sh scripts/
+RUN chmod +x scripts/wait-and-migrate.sh
+
 COPY . .
 
-# Expõe a porta do backend
-EXPOSE 8080
+ENTRYPOINT ["./scripts/wait-and-migrate.sh"]
 
-# Usa o Nodemon no modo de desenvolvimento
-CMD ["npm", "run", "dev"]
+CMD ["nodemon", "server.js"]
