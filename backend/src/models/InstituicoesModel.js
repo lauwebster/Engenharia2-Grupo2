@@ -3,7 +3,7 @@ import knexInitializer from "knex";
 
 const knex = knexInitializer(knexConfig.development);
 
-class Veiculos {
+class Instituicoes {
   static async create(data) {
     const cleanData = Object.fromEntries(
       Object.entries(data).map(([key, value]) => [
@@ -12,40 +12,34 @@ class Veiculos {
       ])
     );
 
-    return knex("veiculos")
+    return knex("instituicoes")
       .insert(cleanData)
       .returning("*");
   }
 
   static async findAll() {
-    return knex("veiculos")
+    return knex("instituicoes")
       .select("*");
   }
 
   static async findById(id) {
-    return knex("veiculos")
+    return knex("instituicoes")
       .where({ id })
       .first();
   }
 
   static async update(id, data) {
-    return knex("veiculos")
+    return knex("instituicoes")
       .where({ id })
       .update(data)
       .returning("*");
   }
 
   static async delete(id) {
-    return knex("veiculos")
+    return knex("instituicoes")
       .where({ id })
       .del();
   }
-
-  static async findByPlaca(placa) {
-    return knex("veiculos")
-      .where({ placa })
-      .first();
-  }
 }
 
-export default Veiculos; 
+export default Instituicoes; 
